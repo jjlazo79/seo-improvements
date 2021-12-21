@@ -68,6 +68,7 @@ class SEOImprovementsTopPosts
 	{
 		$outline = '<label for="si_post_order" style="width:150px; display:inline-block;">' . __( 'Post order', SEOIMPROVEMENTS_TEXT_DOMAIN ) . '</label>';
 		$outline .= '<input type="number" name="si_post_order" id="si_post_order" class="si_post_order" min="0" max="100" steps="1" value="' . esc_attr(get_post_meta($meta_id->ID, 'si_post_order', true)) . '"/>';
+		$outline .= '<small>This order is only valid to category pages. Number 1 will displayed in first place.</small>';
 
 		// Add nonce for security and authentication.
 		wp_nonce_field('custom_nonce_action', 'custom_nonce');
