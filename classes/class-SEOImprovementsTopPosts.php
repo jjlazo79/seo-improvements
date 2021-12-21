@@ -127,10 +127,21 @@ class SEOImprovementsTopPosts
 	 */
 	public function seo_improvements_category_order( $query ) {
 		// Only in categoy pages.
-		if ( ! is_admin()&& $query->is_category() && $query->is_main_query() ) {
-			$query->set( 'meta_key', 'si_post_order' );
-			$query->set( 'orderby', 'meta_value_num' );
-			$query->set( 'order', 'ASC' );
+		if ( !is_admin()&& $query->is_category() && $query->is_main_query() ) {
+			$query->set('meta_query', array(
+				'relation' => 'OR',
+				array(
+					'key' => 'si_post_order',
+					'compare' => 'EXISTS'
+				),
+				array(
+					'key' => 'si_post_order',
+					'compare' => 'NOT EXISTS'
+				)
+			));
+			$query->set('orderby', 'meta_value_num id');
+			$query->set('meta_type', 'NUMERIC');
+			$query->set('order', 'ASC');
 		}
 		return $query;
 	}
