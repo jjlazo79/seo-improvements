@@ -131,15 +131,16 @@ class SEOImprovementsTopPosts
 			$query->set('meta_query', array(
 				'relation' => 'OR',
 				array(
-					'key' => 'si_post_order',
+					'key'     => 'si_post_order',
 					'compare' => 'EXISTS'
 				),
 				array(
-					'key' => 'si_post_order',
+					'key'     => 'si_post_order',
 					'compare' => 'NOT EXISTS'
 				)
 			));
 			$query->set('orderby', 'meta_value_num id');
+			$query->set('meta_key', 'si_post_order');
 			$query->set('meta_type', 'NUMERIC');
 			$query->set('order', 'ASC');
 		}
