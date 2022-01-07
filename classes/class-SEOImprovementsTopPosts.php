@@ -68,7 +68,7 @@ class SEOImprovementsTopPosts
 	{
 		$outline = '<label for="si_post_order" style="width:150px; display:inline-block;">' . __( 'Post order', SEOIMPROVEMENTS_TEXT_DOMAIN ) . '</label>';
 		$outline .= '<input type="number" name="si_post_order" id="si_post_order" class="si_post_order" min="0" max="100" steps="1" value="' . esc_attr(get_post_meta($meta_id->ID, 'si_post_order', true)) . '"/>';
-		$outline .= '<small>This order is only valid to category pages. Number 1 will displayed in first place.</small>';
+		$outline .= '<small>This sort is only valid to category pages. Larger numbers will be displayed first.</small>';
 
 		// Add nonce for security and authentication.
 		wp_nonce_field('custom_nonce_action', 'custom_nonce');
@@ -127,22 +127,21 @@ class SEOImprovementsTopPosts
 	 */
 	public function seo_improvements_category_order( $query ) {
 		// Only in categoy pages.
-		if ( !is_admin()&& $query->is_category() && $query->is_main_query() ) {
+		if ( !is_admin() && $query->is_category() && $query->is_main_query() ) {
 			$query->set('meta_query', array(
 				'relation' => 'OR',
-				array(
+				'exists_clause' => array(
 					'key'     => 'si_post_order',
 					'compare' => 'EXISTS'
-				),
-				array(
+					),
+				'not_exists_clause' => array(
 					'key'     => 'si_post_order',
 					'compare' => 'NOT EXISTS'
+					)
 				)
-			));
-			$query->set('orderby', 'meta_value_num id');
-			$query->set('meta_key', 'si_post_order');
-			$query->set('meta_type', 'NUMERIC');
-			$query->set('order', 'ASC');
+			);
+			$query->set('order', 'DESC');
+			$query->set('orderby', 'not_exists_clause date');
 		}
 		return $query;
 	}
