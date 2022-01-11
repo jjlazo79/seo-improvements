@@ -12,7 +12,7 @@
  * Plugin Name:       SEO Improvements
  * Plugin URI:        https://isocialweb.agency/plugins/seo-improvements
  * Description:       This plugin changes the pagination of WooCommerce products to Roger's pagination. From page 1 it links only to page 2 (href and next). From page 2 it links to everything (except page 2). From page 3 onwards it links to page 1, previous and next. Also add post order in category pages.
- * Version:           1.0.3
+ * Version:           1.0.4
  * Requires at least: 5.2
  * Requires PHP:      7.2
  * Author:            iSocialweb - Jose Lazo
@@ -29,7 +29,7 @@ defined('ABSPATH') or die('Bad dog. No biscuit!');
 // Define some constants plugin.
 define('SEOIMPROVEMENTS_PLUGIN_DIR_PATH', plugin_dir_path(__FILE__));
 define('SEOIMPROVEMENTS_PLUGIN_DIR_URL', plugin_dir_url(__FILE__));
-define('SEOIMPROVEMENTS_VERSION', '1.0.3');
+define('SEOIMPROVEMENTS_VERSION', '1.0.4');
 define('SEOIMPROVEMENTS_TEXT_DOMAIN', 'seo-improvements');
 
 // Initialize the plugin

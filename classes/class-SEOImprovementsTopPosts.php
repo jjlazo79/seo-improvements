@@ -36,8 +36,8 @@ class SEOImprovementsTopPosts
 	private function __construct()
 	{
 		// Add Actions.
-		add_action( 'add_meta_boxes', array($this, 'seo_improvements_register_metaboxes'));
-		add_action( 'save_post',      array($this, 'seo_improvements_save_metaboxes'));
+		add_action( 'add_meta_boxes', array($this, 'seo_improvements_register_metaboxes') );
+		add_action( 'save_post',      array($this, 'seo_improvements_save_metaboxes') );
 		add_action( 'pre_get_posts',  array($this, 'seo_improvements_category_order') );
 	}
 
@@ -68,7 +68,7 @@ class SEOImprovementsTopPosts
 	{
 		$outline = '<label for="si_post_order" style="width:150px; display:inline-block;">' . __( 'Post order', SEOIMPROVEMENTS_TEXT_DOMAIN ) . '</label>';
 		$outline .= '<input type="number" name="si_post_order" id="si_post_order" class="si_post_order" min="0" max="100" steps="1" value="' . esc_attr(get_post_meta($meta_id->ID, 'si_post_order', true)) . '"/>';
-		$outline .= '<small>This sort is only valid to category pages. Larger numbers will be displayed first.</small>';
+		$outline .= '<small>This sort is only valid to category pages. Larger numbers will be displayed first. Please fill witht left zeros (001, 002, etc)</small>';
 
 		// Add nonce for security and authentication.
 		wp_nonce_field('custom_nonce_action', 'custom_nonce');
@@ -92,51 +92,53 @@ class SEOImprovementsTopPosts
 		$nonce_action = 'custom_nonce_action';
 
 		// Check if nonce is valid.
-		if (!wp_verify_nonce($nonce_name, $nonce_action)) {
+		if ( !wp_verify_nonce($nonce_name, $nonce_action) ) {
 			return;
 		}
 
 		// Check if user has permissions to save data.
-		if (!current_user_can('edit_post', $post_id)) {
+		if ( !current_user_can('edit_post', $post_id) ) {
 			return;
 		}
 
 		// Check if not an autosave.
-		if (wp_is_post_autosave($post_id)) {
+		if ( wp_is_post_autosave($post_id) ) {
 			return;
 		}
 
 		// Check if not a revision.
-		if (wp_is_post_revision($post_id)) {
+		if ( wp_is_post_revision($post_id) ) {
 			return;
 		}
 
 		// Check if $_POST field(s) are available
-		if (isset($_POST['si_post_order'])) {
+		if ( isset($_POST['si_post_order']) && $_POST['si_post_order'] != '' ) {
 			$si_post_order = sanitize_text_field($_POST['si_post_order']);
 			update_post_meta($post_id, 'si_post_order', $si_post_order);
+		} else {
+			delete_post_meta($post_id, 'si_post_order');
 		}
 	}
-
 
 	/**
 	 * Set orderby postmeta post_order
 	 *
 	 * @param object $query
-	 * @return void
+	 * @return object
 	 */
 	public function seo_improvements_category_order( $query ) {
 		// Only in categoy pages.
 		if ( !is_admin() && $query->is_category() && $query->is_main_query() ) {
-			$query->set('meta_query', array(
-				'relation' => 'OR',
-				'exists_clause' => array(
-					'key'     => 'si_post_order',
-					'compare' => 'EXISTS'
+			$query->set('meta_query',
+				array(
+					'relation' => 'OR',
+					'exists_clause' => array(
+						'key'     => 'si_post_order',
+						'compare' => 'EXISTS'
 					),
-				'not_exists_clause' => array(
-					'key'     => 'si_post_order',
-					'compare' => 'NOT EXISTS'
+					'not_exists_clause' => array(
+						'key'     => 'si_post_order',
+						'compare' => 'NOT EXISTS'
 					)
 				)
 			);
